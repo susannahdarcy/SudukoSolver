@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import {
-  range, map, each, split, toNumber, cloneDeep,
+  range, map, each, split, toNumber, cloneDeep, flatten,
 } from 'lodash-es';
 import ICell from './types/ICell';
 import Cell from './Cell';
-import vaildateSudoku from './SudokuValidater';
+// import vaildateSudoku from './SudokuValidater';
 
 const table = map(range(9), () => {
   const row: ICell[] = [];
@@ -26,7 +26,7 @@ const convert1DIndexTo2DIndex = (index1D: number) => [Math.floor(index1D / 9), i
 const inputedSudoku: string = '004300209005009001070060043006002087190007400050083000600000105003508690042910300';
 
 const inputSudoku = (sudokuString: string) => {
-  const inputArray: number[] = map(split(sudokuString, ('')), (i) => toNumber(i));
+  const inputArray: number[] = map(split(sudokuString, ''), toNumber);
   each(inputArray, (prefilledValue: number, i: number) => {
     if (prefilledValue) {
       const index: number[] = convert1DIndexTo2DIndex(i);
@@ -43,29 +43,27 @@ inputSudoku(inputedSudoku);
 function Sudoku() {
   const [sudokuTable, setTable] = useState(table);
 
-  const alterTable = (i: number, value: number) => {
+  const handleSetTable = (i: number, value: number) => {
     const index: number[] = convert1DIndexTo2DIndex(i);
     const copy = cloneDeep(sudokuTable);
     copy[index[0]][index[1]].value = value;
     setTable(copy);
   };
 
-  vaildateSudoku(sudokuTable);
-  let i = -1;
+  // vaildateSudoku(sudokuTable);
+
+  const flattendTable = flatten(sudokuTable);
   return (
     <div className="grid grid-cols-9">
-      {map(sudokuTable, (row) => map(row, (cell: ICell) => {
-        i += 1;
-        return (
-          <Cell
-            key={i}
-            value={cell.value}
-            index={i}
-            prefilled={cell.prefilled}
-            alterTable={alterTable}
-          />
-        );
-      }))}
+      {map(flattendTable, (cell: ICell, index: number) => (
+        <Cell
+          key={index}
+          value={cell.value}
+          index={index}
+          prefilled={cell.prefilled}
+          handleSetTable={handleSetTable}
+        />
+      ))}
     </div>
   );
 }

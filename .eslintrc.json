@@ -23,7 +23,8 @@
     ],
     "rules": {
         "import/extensions": 0,
-        "linebreak-style": ["error", "windows"]
+        "linebreak-style": ["error", "windows"],
+        "react/jsx-no-useless-fragment": ["error", { "allowExpressions": true }]
     },
     "settings": {
     "import/resolver": {

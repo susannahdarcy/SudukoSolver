@@ -2,7 +2,7 @@ interface ICell {
   value: number;
   index?: number;
   prefilled?: boolean;
-  alterTable?: Function;
+  handleSetTable?: Function;
 }
 
 // const Cell2: ICell = {
