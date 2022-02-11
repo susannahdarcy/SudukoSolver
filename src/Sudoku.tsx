@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import {
-  range, map, each, split, toNumber, cloneDeep, flatten,
+  range, map, each, split, toNumber, cloneDeep, flatten, isEmpty,
 } from 'lodash-es';
-import ICell from './types/ICell';
+import { ICell, ICellConponent } from './types/ICell';
 import Cell from './Cell';
-// import vaildateSudoku from './SudokuValidater';
+import vaildateSudoku from './SudokuValidater';
 
 const table = map(range(9), () => {
   const row: ICell[] = [];
@@ -12,6 +12,8 @@ const table = map(range(9), () => {
     const cell: ICell = {
       value: 0,
       prefilled: false,
+      index: 0,
+      isInError: false,
     };
 
     row.push(cell);
@@ -27,14 +29,16 @@ const inputedSudoku: string = '0043002090050090010700600430060020871900074000500
 
 const inputSudoku = (sudokuString: string) => {
   const inputArray: number[] = map(split(sudokuString, ''), toNumber);
-  each(inputArray, (prefilledValue: number, i: number) => {
-    if (prefilledValue) {
-      const index: number[] = convert1DIndexTo2DIndex(i);
-      table[index[0]][index[1]] = {
-        value: prefilledValue,
-        prefilled: true,
-      };
-    }
+
+  each(inputArray, (value: number, i: number) => {
+    const index: number[] = convert1DIndexTo2DIndex(i);
+
+    table[index[0]][index[1]] = {
+      value,
+      prefilled: value !== 0,
+      index: i,
+      isInError: false,
+    };
   });
 };
 
@@ -42,29 +46,64 @@ inputSudoku(inputedSudoku);
 
 function Sudoku() {
   const [sudokuTable, setTable] = useState(table);
+  const flatTable = flatten(sudokuTable);
 
   const handleSetTable = (i: number, value: number) => {
     const index: number[] = convert1DIndexTo2DIndex(i);
     const copy = cloneDeep(sudokuTable);
     copy[index[0]][index[1]].value = value;
+    copy[index[0]][index[1]].index = i;
+    copy[index[0]][index[1]].isInError = false;
     setTable(copy);
   };
 
-  // vaildateSudoku(sudokuTable);
+  const setErrorsInTable = (indexesOfCellsInError: string[]) => {
+    const copy = cloneDeep(sudokuTable);
 
-  const flattendTable = flatten(sudokuTable);
+    console.log(indexesOfCellsInError);
+    // Set all cells to be not in error
+    if (isEmpty(indexesOfCellsInError)) {
+      for (let i = 0; i < 9; i += 1) {
+        for (let j = 0; j < 9; j += 1) {
+          copy[i][j].isInError = false;
+        }
+      }
+    }
+
+    each(indexesOfCellsInError, (i) => {
+      const index: number[] = convert1DIndexTo2DIndex(parseInt(i, 10));
+      copy[index[0]][index[1]].isInError = true;
+    });
+
+    setTable(copy);
+  };
+
+  const onClickCheckButton = () => {
+    console.log('click');
+    const cellsInError = vaildateSudoku(sudokuTable);
+    setErrorsInTable(cellsInError);
+  };
+
   return (
-    <div className="grid grid-cols-9">
-      {map(flattendTable, (cell: ICell, index: number) => (
-        <Cell
-          key={index}
-          value={cell.value}
-          index={index}
-          prefilled={cell.prefilled}
-          handleSetTable={handleSetTable}
-        />
-      ))}
-    </div>
+    <>
+      <div className="grid grid-cols-9">
+        {map(flatTable, (cell: ICellConponent) => (
+          <Cell
+            key={cell.index}
+            value={cell.value}
+            index={cell.index}
+            prefilled={cell.prefilled}
+            handleSetTable={handleSetTable}
+            isInError={cell.isInError}
+          />
+        ))}
+      </div>
+      <div>
+        <button type="button" onClick={onClickCheckButton}>
+          Check it!
+        </button>
+      </div>
+    </>
   );
 }
 

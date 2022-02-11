@@ -1,33 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ICell from './types/ICell';
+import { ICellConponent } from './types/ICell';
 
 function Cell({
-  value, index, prefilled, handleSetTable,
-}: ICell) {
+  value, index, prefilled, handleSetTable, isInError,
+}: ICellConponent) {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (/[1-9]/.test(event.currentTarget.value)) {
-      handleSetTable?.(index, +(event.target.value));
-    } else if (value !== 0) {
-      // Restore cell to empty state.
-      handleSetTable?.(index, +(0));
+    const input = event.currentTarget.value;
+
+    // Restore cell to empty state.
+    if (input === '') {
+      handleSetTable(index, 0);
+      return;
+    }
+
+    if (/[1-9]/.test(input)) {
+      handleSetTable(index, parseInt(input, 10));
     }
   };
 
-  const getStateValue = () => {
-    if (value !== 0) {
-      return value.toString();
-    }
-    return '';
+  const displayValue = (value !== 0) ? value.toString() : '';
+
+  const buttonStyle = {
+    backgroundColor: isInError ? '#FF0000' : 'transparent',
   };
 
   const cellElement = prefilled ? (<div>{value}</div>)
     : (
       <input
+        id={index.toString()}
         className="shadow border rounded"
         maxLength={1}
         onChange={onChange}
-        value={getStateValue() || ''}
+        value={displayValue}
+        style={buttonStyle}
       />
     );
   return (

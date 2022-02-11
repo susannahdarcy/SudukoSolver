@@ -1,8 +1,12 @@
 interface ICell {
   value: number;
-  index?: number;
-  prefilled?: boolean;
-  handleSetTable?: Function;
+  index: number;
+  prefilled: boolean;
+  isInError: boolean;
+}
+
+interface ICellConponent extends ICell {
+  handleSetTable: Function;
 }
 
 // const Cell2: ICell = {
@@ -10,4 +14,4 @@ interface ICell {
 //   preFilled: false,
 // };
 
-export default ICell;
+export type { ICell, ICellConponent };

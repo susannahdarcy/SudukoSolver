@@ -1,44 +1,93 @@
-import { difference, each, map } from 'lodash-es';
-import ICell from './types/ICell';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable max-len */
+import {
+  cloneDeep, concat, countBy, difference, each, flatten, isEmpty, map, pullAt, range, reduce,
+} from 'lodash-es';
+import { ICell } from './types/ICell';
 
-const getValuesFromCellTable = (cellTable: ICell[][]) => {
-  const table = map(cellTable, (cellRow) => map(cellRow, (cell) => cell.value));
-  console.log(table);
-};
+const getValuesFromCellArray = (cellArray: ICell[]) => map(cellArray, (cell) => cell.value);
 
-const getValuesFromCellArray = (cellArray: ICell[]) => {
-  const array = map(cellArray, (cell) => cell.value);
-  console.log(array);
-  return array;
-};
-
-const checkCellArray = (cells: ICell[]) => {
+const getCellsInError = (cells: ICell[]) => {
+  // Check if array contains all numbers
   const values = getValuesFromCellArray(cells);
   const CHECKER_ARRAY = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const dif = difference(CHECKER_ARRAY, values);
-  console.log(dif);
-  const errorIndex: number[] = [];
-  each(dif, (error) => {
+  const diff = difference(CHECKER_ARRAY, values);
+  // If not. Find cells which are in error (duplicate values)
+  const wrongCells: ICell[] = [];
+  if (!isEmpty(diff)) {
+    const counts = countBy(cloneDeep(cells), (cell) => cell.value);
+    const duplicates = reduce(counts, (results: number[], count, value) => {
+      const num = parseInt(value, 10);
+
+      if (count > 1) {
+        return concat(results, num);
+      }
+      return results;
+    }, []);
+
+    // Add duplicate cells
+    each(duplicates, (dup) => {
+      each(cells, (cell) => {
+        if (cell.value === dup && !cell.prefilled) {
+          wrongCells.push(cell);
+        }
+      });
+    });
+
+    // Add cells with no entry (value === 0)
     each(cells, (cell) => {
-      if (cell.value === error) {
-        // nullish coalescing operator
-        errorIndex.push(cell.index);
+      if (cell.value === 0 && !cell.prefilled) {
+        wrongCells.push(cell);
       }
     });
+  }
+  return wrongCells;
+};
+
+const getCellsInColumn = (table: any[][], column: number) => {
+  if (column < 0 && column > 8) return [];
+
+  return map(table, (row) => row[column]);
+};
+
+const getCellGrouping = (table: any[][], group: number) => {
+  let groupedCells: ICell[] = [];
+
+  if (group < 0 && group > 8) return groupedCells;
+
+  // Get Row
+  // 0,1,2 -> 0 : 3,4,5 -> 3 : 6,7,8 -> 6
+  const i = group - (group % 3);
+
+  // Get Column:
+  // 0,3,6 -> 0 : 1,4,7 -> 1 : 2,5,8 -> 2
+  const j = (group % 3) * 3;
+
+  const cloneTable = cloneDeep(table);
+
+  each(range(3), (offset) => {
+    groupedCells = concat(groupedCells, pullAt(cloneTable[i + offset], range(j, j + 3)));
   });
-  console.log(errorIndex);
-  return errorIndex;
+
+  return groupedCells;
 };
 
 function vaildateSudoku(table: ICell[][]) {
-  getValuesFromCellTable(table);
-  getValuesFromCellArray(table[0]);
+  const cellsInError: ICell[][] = [];
+  for (let i = 0; i < 9; i += 1) {
+    // Check row
+    cellsInError.push(getCellsInError(table[i]));
+    // Check Column
+    cellsInError.push(getCellsInError(getCellsInColumn(table, i)));
+    // Check Group
+    cellsInError.push(getCellsInError(getCellGrouping(table, i)));
+  }
 
-  checkArray([9, 9, 7, 6, 5, 4, 3, 2, 1]);
-  // Check all rows
+  const flat: ICell[] = flatten(cellsInError);
 
-  // Check all Columns
-  // Check squares
+  // Remove Duplicates, and get cells indexes that are in error.
+  const errorCounts = countBy(cloneDeep(flat), (cell) => cell.index);
+  return Object.keys(errorCounts);
 }
 
 export default vaildateSudoku;
