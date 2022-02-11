@@ -59,8 +59,6 @@ function Sudoku() {
 
   const setErrorsInTable = (indexesOfCellsInError: string[]) => {
     const copy = cloneDeep(sudokuTable);
-
-    console.log(indexesOfCellsInError);
     // Set all cells to be not in error
     if (isEmpty(indexesOfCellsInError)) {
       for (let i = 0; i < 9; i += 1) {
