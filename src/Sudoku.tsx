@@ -77,7 +77,6 @@ function Sudoku() {
   };
 
   const onClickCheckButton = () => {
-    console.log('click');
     const cellsInError = vaildateSudoku(sudokuTable);
     setErrorsInTable(cellsInError);
   };
