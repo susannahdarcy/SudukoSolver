@@ -96,6 +96,7 @@ function Sudoku() {
           />
         ))}
       </div>
+
       <div>
         <button type="button" onClick={checkButton}>
           Check it!

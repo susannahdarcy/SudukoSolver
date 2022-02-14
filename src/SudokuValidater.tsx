@@ -17,7 +17,7 @@ const getCellsInError = (cells: ICell[]) => {
   const wrongCells: ICell[] = [];
 
   if (!isEmpty(diff)) {
-    const counts = countBy(cloneDeep(cells), (cell) => cell.value);
+    const counts = countBy(cloneDeep(cells), 'value');
     const duplicates = reduce(counts, (results: number[], count, value) => {
       const num = parseInt(value, 10);
 
