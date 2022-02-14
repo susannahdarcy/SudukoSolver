@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   range, map, each, split, toNumber, cloneDeep, flatten, isEmpty,
 } from 'lodash-es';
-import { ICell, ICellConponent } from './types/ICell';
+import { ICell, ICellComponent } from './types/ICell';
 import Cell from './Cell';
 import vaildateSudoku from './SudokuValidater';
 
@@ -76,7 +76,7 @@ function Sudoku() {
     setTable(copy);
   };
 
-  const onClickCheckButton = () => {
+  const checkButton = () => {
     const cellsInError = vaildateSudoku(sudokuTable);
     setErrorsInTable(cellsInError);
   };
@@ -84,19 +84,20 @@ function Sudoku() {
   return (
     <>
       <div className="grid grid-cols-9">
-        {map(flatTable, (cell: ICellConponent) => (
+        {map(flatTable, ({
+          value, index, prefilled, isInError,
+        }: ICellComponent) => (
           <Cell
-            key={cell.index}
-            value={cell.value}
-            index={cell.index}
-            prefilled={cell.prefilled}
+            key={index}
+            {... {
+              value, index, prefilled, isInError,
+            }}
             handleSetTable={handleSetTable}
-            isInError={cell.isInError}
           />
         ))}
       </div>
       <div>
-        <button type="button" onClick={onClickCheckButton}>
+        <button type="button" onClick={checkButton}>
           Check it!
         </button>
       </div>

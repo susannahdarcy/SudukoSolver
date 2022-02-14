@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ICellConponent } from './types/ICell';
+import { ICellComponent } from './types/ICell';
 
 function Cell({
   value, index, prefilled, handleSetTable, isInError,
-}: ICellConponent) {
+}: ICellComponent) {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.currentTarget.value;
 

@@ -5,8 +5,8 @@ interface ICell {
   isInError: boolean;
 }
 
-interface ICellConponent extends ICell {
+interface ICellComponent extends ICell {
   handleSetTable: Function;
 }
 
-export type { ICell, ICellConponent };
+export type { ICell, ICellComponent };

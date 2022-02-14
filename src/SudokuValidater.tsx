@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 import {
-  cloneDeep, concat, countBy, difference, each, flatten, isEmpty, map, pullAt, range, reduce,
+  cloneDeep, concat, countBy, difference, each, flatten, isEmpty, keys, map, pullAt, range, reduce,
 } from 'lodash-es';
 import { ICell } from './types/ICell';
 
@@ -12,22 +12,21 @@ const getCellsInError = (cells: ICell[]) => {
   const values = getValuesFromCellArray(cells);
   const CHECKER_ARRAY = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const diff = difference(CHECKER_ARRAY, values);
+
   // If not. Find cells which are in error (duplicate values)
   const wrongCells: ICell[] = [];
+
   if (!isEmpty(diff)) {
     const counts = countBy(cloneDeep(cells), (cell) => cell.value);
     const duplicates = reduce(counts, (results: number[], count, value) => {
       const num = parseInt(value, 10);
 
-      if (count > 1) {
-        return concat(results, num);
-      }
-      return results;
+      return (count > 1) ? concat(results, num) : results;
     }, []);
 
     // Add duplicate cells
     each(duplicates, (dup) => {
-      each(cells, (cell) => {
+      each(cells, (cell: ICell) => {
         if (cell.value === dup && !cell.prefilled) {
           wrongCells.push(cell);
         }
@@ -44,11 +43,7 @@ const getCellsInError = (cells: ICell[]) => {
   return wrongCells;
 };
 
-const getCellsInColumn = (table: any[][], column: number) => {
-  if (column < 0 && column > 8) return [];
-
-  return map(table, (row) => row[column]);
-};
+const getCellsInColumn = (table: any[][], column: number) => ((column < 0 && column > 8) ? [] : map(table, (row) => row[column]));
 
 const getCellGrouping = (table: any[][], group: number) => {
   let groupedCells: ICell[] = [];
@@ -87,7 +82,7 @@ function vaildateSudoku(table: ICell[][]) {
 
   // Remove Duplicates, and get cells indexes that are in error.
   const errorCounts = countBy(cloneDeep(flat), (cell) => cell.index);
-  return Object.keys(errorCounts);
+  return keys(errorCounts);
 }
 
 export default vaildateSudoku;
