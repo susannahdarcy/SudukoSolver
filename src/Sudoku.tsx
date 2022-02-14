@@ -76,14 +76,34 @@ function Sudoku() {
     setTable(copy);
   };
 
-  const onClickCheckButton = () => {
+  const loadButton = () => {
+    console.log('click');
+  };
+
+  const clearButton = () => {
+    console.log('click');
+  };
+
+  const solveButton = () => {
+    console.log('click');
+  };
+
+  const checkButton = () => {
     const cellsInError = vaildateSudoku(sudokuTable);
     setErrorsInTable(cellsInError);
   };
 
   return (
-    <>
-      <div className="grid grid-cols-9">
+    <div className="container w-168 mx-auto py-10">
+      <div className="py-2 grid grid-cols-3">
+        <button type="button" className="col-start-1 place-self-start font-mono" onClick={loadButton}>
+          Load next level
+        </button>
+        <button type="button" className="col-start-3 place-self-end font-mono" onClick={clearButton}>
+          Clear it
+        </button>
+      </div>
+      <div className="grid grid-cols-9 grid-rows-9 place-content-center place-items-center">
         {map(flatTable, (cell: ICellConponent) => (
           <Cell
             key={cell.index}
@@ -95,12 +115,15 @@ function Sudoku() {
           />
         ))}
       </div>
-      <div>
-        <button type="button" onClick={onClickCheckButton}>
-          Check it!
+      <div className="py-2 grid grid-cols-3">
+        <button type="button" className="col-start-1 place-self-start font-mono" onClick={solveButton}>
+          Solve it for me
+        </button>
+        <button type="button" className="col-start-3 place-self-end font-mono" onClick={checkButton}>
+          Check it
         </button>
       </div>
-    </>
+    </div>
   );
 }
 

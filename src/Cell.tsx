@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
+import { concat, includes, range } from 'lodash-es';
 import { ICellConponent } from './types/ICell';
 
 function Cell({
@@ -21,25 +23,50 @@ function Cell({
 
   const displayValue = (value !== 0) ? value.toString() : '';
 
-  const buttonStyle = {
-    backgroundColor: isInError ? '#FF0000' : 'transparent',
-  };
+  // Grouping Border Logic
+  const topBorderCells = concat(range(0, 9), range(27, 36), range(54, 63));
+  const isTopBorder = includes(topBorderCells, index);
 
-  const cellElement = prefilled ? (<div>{value}</div>)
+  const bottomBorderCells = concat(range(18, 27), range(45, 54), range(72, 81));
+  const isBottomBorder = includes(bottomBorderCells, index);
+
+  const isLeftBorder = index % 3 === 0;
+
+  const isRightBorder = index % 3 === 2;
+
+  const styles = clsx(
+    'border',
+    'h-16',
+    'w-16',
+    'text-2xl',
+    'text-center',
+    prefilled && ['font-bold', 'flex', 'justify-center', 'items-center'],
+    isInError && 'bg-red-600/50',
+    isTopBorder && 'border-t-3',
+    isBottomBorder && 'border-b-3',
+    isLeftBorder && 'border-l-3',
+    isRightBorder && 'border-r-3',
+  );
+
+  const cellElement = prefilled ? (
+    <div className={styles}>
+      {value}
+    </div>
+  )
     : (
       <input
         id={index.toString()}
-        className="shadow border rounded"
+        className={styles}
         maxLength={1}
         onChange={onChange}
         value={displayValue}
-        style={buttonStyle}
       />
     );
+
   return (
-    <>
+    <div className="">
       {cellElement}
-    </>
+    </div>
   );
 }
 
