@@ -96,11 +96,19 @@ function Sudoku() {
   return (
     <div className="container w-168 mx-auto py-10">
       <div className="py-2 grid grid-cols-3">
-        <button type="button" className="col-start-1 place-self-start font-mono" onClick={loadButton}>
+        <button
+          type="button"
+          className="col-start-1 place-self-start font-mono"
+          onClick={loadButton}
+        >
           Load next level
         </button>
 
-        <button type="button" className="col-start-3 place-self-end font-mono" onClick={clearButton}>
+        <button
+          type="button"
+          className="col-start-3 place-self-end font-mono"
+          onClick={clearButton}
+        >
           Clear it
         </button>
       </div>
@@ -120,11 +128,19 @@ function Sudoku() {
       </div>
 
       <div className="py-2 grid grid-cols-3">
-        <button type="button" className="col-start-1 place-self-start font-mono" onClick={solveButton}>
+        <button
+          type="button"
+          className="col-start-1 place-self-start font-mono"
+          onClick={solveButton}
+        >
           Solve it for me
         </button>
 
-        <button type="button" className="col-start-3 place-self-end font-mono" onClick={checkButton}>
+        <button
+          type="button"
+          className="col-start-3 place-self-end font-mono"
+          onClick={checkButton}
+        >
           Check it
         </button>
       </div>

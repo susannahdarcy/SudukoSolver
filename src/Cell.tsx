@@ -64,7 +64,7 @@ function Cell({
     );
 
   return (
-    <div className="">
+    <div>
       {cellElement}
     </div>
   );
