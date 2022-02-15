@@ -1,13 +1,12 @@
 interface ICell {
   value: number;
-  index?: number;
-  prefilled?: boolean;
-  handleSetTable?: Function;
+  index: number;
+  prefilled: boolean;
+  isInError: boolean;
 }
 
-// const Cell2: ICell = {
-//   value: 0,
-//   preFilled: false,
-// };
+interface ICellComponent extends ICell {
+  handleSetTable: Function;
+}
 
-export default ICell;
+export type { ICell, ICellComponent };
