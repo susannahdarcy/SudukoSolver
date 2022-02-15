@@ -21,6 +21,15 @@
         "react",
         "@typescript-eslint"
     ],
+    "overrides": [
+        {
+            "files": ["*.ts", "*.tsx"],
+          
+            "parserOptions": {
+                "project": "./tsconfig.json"
+            }
+        }
+    ],
     "rules": {
         "import/extensions": 0,
         "linebreak-style": ["error", "windows"],
