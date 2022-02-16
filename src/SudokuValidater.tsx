@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-len */
 import {
   cloneDeep, concat, countBy, difference, each, flatten, isEmpty, keys, map, pullAt, range, reduce,
 } from 'lodash-es';
 import { ICell } from './types/ICell';
 
-const getValuesFromCellArray = (cellArray: ICell[]) => map(cellArray, (cell) => cell.value);
+function getValuesFromCellArray(cellArray: ICell[]) {
+  return map(cellArray, (cell) => cell.value);
+}
 
 const getCellsInError = (cells: ICell[]) => {
   // Check if array contains all numbers
@@ -43,9 +43,13 @@ const getCellsInError = (cells: ICell[]) => {
   return wrongCells;
 };
 
-const getCellsInColumn = (table: any[][], column: number) => ((column < 0 && column > 8) ? [] : map(table, (row) => row[column]));
+function getCellsInColumn(table: ICell[][], column: number) {
+  return ((column < 0 && column > 8)
+    ? []
+    : map(table, (row) => row[column]));
+}
 
-const getCellGrouping = (table: any[][], group: number) => {
+function getCellGrouping(table: ICell[][], group: number) {
   let groupedCells: ICell[] = [];
 
   if (group < 0 && group > 8) return groupedCells;
@@ -65,7 +69,7 @@ const getCellGrouping = (table: any[][], group: number) => {
   });
 
   return groupedCells;
-};
+}
 
 function vaildateSudoku(table: ICell[][]) {
   const cellsInError: ICell[][] = [];
@@ -85,4 +89,6 @@ function vaildateSudoku(table: ICell[][]) {
   return keys(errorCounts);
 }
 
-export default vaildateSudoku;
+export {
+  vaildateSudoku, getCellGrouping, getCellsInColumn, getValuesFromCellArray,
+};
