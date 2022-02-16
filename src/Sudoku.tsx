@@ -85,8 +85,13 @@ function Sudoku() {
     console.log('click');
   };
 
+  const changeTableState = (newTable: ICell[][]) => {
+    setTable(newTable);
+  };
+
   const solveButton = () => {
-    AISolver(table);
+    const solvedTable = AISolver(table, changeTableState);
+    setTable(solvedTable);
   };
 
   const checkButton = () => {

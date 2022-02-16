@@ -64,13 +64,13 @@ const isValid = (table: ICell[][], cellIndexes: number[], value: number) => {
   const groupNumber = floor(i / 3) + floor(j / 3);
 
   for (let index = 0; index < 9; index += 1) {
-    if (table[i][index].value === value && index !== i) {
+    if (table[i][index].value === value) {
       return false;
     }
   }
 
   for (let index = 0; index < 9; index += 1) {
-    if (table[index][j].value === value && index !== j) {
+    if (table[index][j].value === value) {
       return false;
     }
   }
@@ -79,7 +79,7 @@ const isValid = (table: ICell[][], cellIndexes: number[], value: number) => {
   const boxY = floor(i / 3);
   for (let index = boxY * 3; index < (boxY * 3) + 3; index += 1) {
     for (let index2 = boxX * 3; index2 < (boxX * 3) + 3; index2 += 1) {
-      if (table[i][index].value === value && index !== i && index2 !== j) {
+      if (table[index][index2].value === value) {
         return false;
       }
     }
@@ -130,7 +130,7 @@ const isValid = (table: ICell[][], cellIndexes: number[], value: number) => {
   return true;
 };
 
-const backtrackingSearch = (table: ICell[][]) => {
+const backtrackingSearch = (table: ICell[][], stateChange: (table: ICell[][]) => void) => {
   const cellIndexes = getUnassignedCell(table);
   if (cellIndexes === -1) {
     console.log('-1');
@@ -139,40 +139,27 @@ const backtrackingSearch = (table: ICell[][]) => {
   const [i, j] = cellIndexes;
   for (let value = 1; value < 10; value += 1) {
     if (isValid(table, cellIndexes, value)) {
-      // console.log(value);
-      // Assign celll in table the value.
-      // const [i, j] = convert1DIndexTo2DIndex(cellIndex);
-      // console.log('befpre %d', table[i][j].value);
       // eslint-disable-next-line no-param-reassign
       table[i][j].value = value;
-      // console.log('after %d', table[i][j].value);
-      if (backtrackingSearch(table)) {
-        console.log('h');
+      if (backtrackingSearch(table, stateChange)) {
+        console.log(cellIndexes);
         return true;
       }
       // eslint-disable-next-line no-param-reassign
       table[i][j].value = 0;
-      // console.log('change');
-    } else {
-      // console.log('invalid');
     }
   }
   return false;
 };
 
-const t = (arr:number[]) => {
-  // eslint-disable-next-line no-param-reassign
-  arr[0] = 1;
-  return true;
-};
-
-function AISolver(table: ICell[][]) {
+function AISolver(table: ICell[][], stateChange: (table: ICell[][]) => void) {
   const copy = cloneDeep(table);
   const domains = getDomainsForCells(table);
   console.log(table);
-  const test = backtrackingSearch(copy);
-  console.log(test);
+  backtrackingSearch(copy, stateChange);
   console.log(copy);
+
+  return copy;
 }
 
 export default AISolver;
