@@ -44,7 +44,6 @@ const inputSudoku = (sudokuString: string) => {
 };
 
 inputSudoku(inputtedSudoku);
-
 function Sudoku() {
   const [sudokuTable, setTable] = useState(table);
   const flatTable = flatten(sudokuTable);
@@ -82,15 +81,19 @@ function Sudoku() {
   };
 
   const clearButton = () => {
-    console.log('click');
-  };
+    const copy = cloneDeep(sudokuTable);
 
-  const changeTableState = (newTable: ICell[][]) => {
-    setTable(newTable);
+    for (let i = 0; i < 9; i += 1) {
+      for (let j = 0; j < 9; j += 1) {
+        if (!copy[i][j].prefilled) copy[i][j].value = 0;
+      }
+    }
+
+    setTable(copy);
   };
 
   const solveButton = () => {
-    const solvedTable = AISolver(table, changeTableState);
+    const solvedTable = AISolver(table);
     setTable(solvedTable);
   };
 
