@@ -98,6 +98,7 @@ const backtrackingSearch = (table: ICell[][]) => {
       table[i][j].value = value;
       // TODO Track value and index for visuals of solving.
       if (backtrackingSearch(table)) {
+        table[i][j].isInError = false;
         return true;
       }
       table[i][j].value = 0;

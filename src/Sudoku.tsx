@@ -59,15 +59,25 @@ function Sudoku() {
     setTable(table);
   };
 
+  const [currentQuizNumber, setCurrentQuizNumber] = useState(0);
+
+  const getCurrentQuiz = () => currentQuizNumber;
+
+  const setCurrentQuiz = (quizNumber:number) => {
+    setCurrentQuizNumber(quizNumber);
+  };
+
   return (
     <div className="container w-168 mx-auto py-10">
       <div className="py-2 grid grid-cols-3">
-        <ClearTableButton
-          {... { getTableData, setTableData }}
+        <LoadTableButton
+          {... {
+            getTableData, setTableData, getCurrentQuiz, setCurrentQuiz,
+          }}
           classString="col-start-1 place-self-start font-mono"
         />
 
-        <LoadTableButton
+        <ClearTableButton
           {... { getTableData, setTableData }}
           classString="col-start-3 place-self-end font-mono"
         />
@@ -76,6 +86,7 @@ function Sudoku() {
       <SudokuTable
         {... { getTableData, setTableData }}
       />
+
       <div className="py-2 grid grid-cols-3">
         <SolveTableButton
           {... { getTableData, setTableData }}
@@ -87,9 +98,7 @@ function Sudoku() {
           classString="col-start-3 place-self-end font-mono"
         />
       </div>
-
     </div>
-
   );
 }
 

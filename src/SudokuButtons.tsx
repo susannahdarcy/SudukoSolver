@@ -1,9 +1,12 @@
-import { cloneDeep, each, isEmpty } from 'lodash-es';
+import {
+  cloneDeep, each, isEmpty, map, split, toNumber,
+} from 'lodash-es';
 import React from 'react';
 import { convert1DIndexTo2DIndex } from './SudokuTable';
 import { vaildateSudoku } from './SudokuValidater';
-import { ISudokuTableButton } from './types/ISudoku';
+import { ISudokuTableAndQuizButton, ISudokuTableButton } from './types/ISudoku';
 import AISolver from './AISolver';
+import loadExamples from './LoadExamples';
 
 function CheckTableButton({ getTableData, setTableData, classString }: ISudokuTableButton) {
   const sudokuTable = getTableData();
@@ -72,12 +75,31 @@ function ClearTableButton({ getTableData, setTableData, classString }: ISudokuTa
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function LoadTableButton({ getTableData, setTableData, classString }: ISudokuTableButton) {
-  // const sudokuTable = getTableData();
-  // setTableData
+function LoadTableButton({
+  getTableData, setTableData, getCurrentQuiz, setCurrentQuiz, classString,
+}: ISudokuTableAndQuizButton) {
+  const sudokuTable = getTableData();
+  let currentQuizNumber = getCurrentQuiz();
+
   const loadTable = () => {
-    console.log('click');
+    currentQuizNumber += 1;
+    const sudokuString = loadExamples(currentQuizNumber);
+
+    const nextTable = cloneDeep(sudokuTable);
+    const inputArray: number[] = map(split(sudokuString, ''), toNumber);
+
+    each(inputArray, (value: number, i: number) => {
+      const index: number[] = convert1DIndexTo2DIndex(i);
+      nextTable[index[0]][index[1]] = {
+        value,
+        prefilled: value !== 0,
+        index: i,
+        isInError: false,
+      };
+    });
+
+    setTableData(nextTable);
+    setCurrentQuiz(currentQuizNumber);
   };
 
   return (
