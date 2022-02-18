@@ -4,7 +4,8 @@ import {
 } from 'lodash-es';
 import { ICell, ICellComponent } from './types/ICell';
 import Cell from './Cell';
-import vaildateSudoku from './SudokuValidater';
+import { vaildateSudoku } from './SudokuValidater';
+import AISolver from './AISolver';
 
 const table = map(range(9), () => {
   const row: ICell[] = [];
@@ -25,7 +26,7 @@ const table = map(range(9), () => {
 // convert index into cell by i = index / 9: j = index % 9
 const convert1DIndexTo2DIndex = (index1D: number) => [Math.floor(index1D / 9), index1D % 9];
 
-const inputedSudoku: string = '004300209005009001070060043006002087190007400050083000600000105003508690042910300';
+const inputtedSudoku: string = '004300209005009001070060043006002087190007400050083000600000105003508690042910300';
 
 const inputSudoku = (sudokuString: string) => {
   const inputArray: number[] = map(split(sudokuString, ''), toNumber);
@@ -42,8 +43,7 @@ const inputSudoku = (sudokuString: string) => {
   });
 };
 
-inputSudoku(inputedSudoku);
-
+inputSudoku(inputtedSudoku);
 function Sudoku() {
   const [sudokuTable, setTable] = useState(table);
   const flatTable = flatten(sudokuTable);
@@ -81,11 +81,20 @@ function Sudoku() {
   };
 
   const clearButton = () => {
-    console.log('click');
+    const copy = cloneDeep(sudokuTable);
+
+    for (let i = 0; i < 9; i += 1) {
+      for (let j = 0; j < 9; j += 1) {
+        if (!copy[i][j].prefilled) copy[i][j].value = 0;
+      }
+    }
+
+    setTable(copy);
   };
 
   const solveButton = () => {
-    console.log('click');
+    const solvedTable = AISolver(table);
+    setTable(solvedTable);
   };
 
   const checkButton = () => {

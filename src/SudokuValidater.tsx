@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-len */
 import {
   cloneDeep, concat, countBy, difference, each, flatten, isEmpty, keys, map, pullAt, range, reduce,
 } from 'lodash-es';
@@ -43,9 +41,11 @@ const getCellsInError = (cells: ICell[]) => {
   return wrongCells;
 };
 
-const getCellsInColumn = (table: any[][], column: number) => ((column < 0 && column > 8) ? [] : map(table, (row) => row[column]));
+const getCellsInColumn = (table: ICell[][], column: number) => ((column < 0 && column > 8)
+  ? []
+  : map(table, (row) => row[column]));
 
-const getCellGrouping = (table: any[][], group: number) => {
+const getCellGrouping = (table: ICell[][], group: number) => {
   let groupedCells: ICell[] = [];
 
   if (group < 0 && group > 8) return groupedCells;
@@ -85,4 +85,6 @@ function vaildateSudoku(table: ICell[][]) {
   return keys(errorCounts);
 }
 
-export default vaildateSudoku;
+export {
+  vaildateSudoku, getCellGrouping, getCellsInColumn, getValuesFromCellArray,
+};
