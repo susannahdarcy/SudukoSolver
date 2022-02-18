@@ -3,9 +3,7 @@ import {
 } from 'lodash-es';
 import { ICell } from './types/ICell';
 
-function getValuesFromCellArray(cellArray: ICell[]) {
-  return map(cellArray, (cell) => cell.value);
-}
+const getValuesFromCellArray = (cellArray: ICell[]) => map(cellArray, (cell) => cell.value);
 
 const getCellsInError = (cells: ICell[]) => {
   // Check if array contains all numbers
@@ -43,13 +41,11 @@ const getCellsInError = (cells: ICell[]) => {
   return wrongCells;
 };
 
-function getCellsInColumn(table: ICell[][], column: number) {
-  return ((column < 0 && column > 8)
-    ? []
-    : map(table, (row) => row[column]));
-}
+const getCellsInColumn = (table: ICell[][], column: number) => ((column < 0 && column > 8)
+  ? []
+  : map(table, (row) => row[column]));
 
-function getCellGrouping(table: ICell[][], group: number) {
+const getCellGrouping = (table: ICell[][], group: number) => {
   let groupedCells: ICell[] = [];
 
   if (group < 0 && group > 8) return groupedCells;
@@ -69,7 +65,7 @@ function getCellGrouping(table: ICell[][], group: number) {
   });
 
   return groupedCells;
-}
+};
 
 function vaildateSudoku(table: ICell[][]) {
   const cellsInError: ICell[][] = [];
