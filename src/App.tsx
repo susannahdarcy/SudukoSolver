@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import Sudoku from './Sudoku';
+import { Sudoku } from './Sudoku';
 
 function App() {
   return (
