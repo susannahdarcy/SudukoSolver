@@ -2,7 +2,7 @@ interface ICell {
   value: number;
   index: number;
   prefilled: boolean;
-  isInError: boolean;
+  cellState: CellState;
 }
 
 interface ICellComponent extends ICell {
@@ -10,3 +10,12 @@ interface ICellComponent extends ICell {
 }
 
 export type { ICell, ICellComponent };
+
+enum CellState {
+  ERROR,
+  UNKNOWN,
+  PROCESSING,
+  CORRECT,
+}
+
+export { CellState };

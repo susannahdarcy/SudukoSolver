@@ -1,5 +1,5 @@
 import {
-  cloneDeep, each, isEmpty, map, split, toNumber,
+  cloneDeep, each, isEmpty, map, pullAt, split, toNumber,
 } from 'lodash-es';
 import React from 'react';
 import { convert1DIndexTo2DIndex } from './SudokuTable';
@@ -7,6 +7,7 @@ import { vaildateSudoku } from './SudokuValidater';
 import { ISudokuTableAndQuizButton, ISudokuTableButton } from './types/ISudoku';
 import AISolver from './AISolver';
 import loadExamples from './LoadExamples';
+import { CellState } from './types/ICell';
 
 function CheckTableButton({ getTableData, setTableData, classString }: ISudokuTableButton) {
   const sudokuTable = getTableData();
@@ -17,14 +18,14 @@ function CheckTableButton({ getTableData, setTableData, classString }: ISudokuTa
     if (isEmpty(indexesOfCellsInError)) {
       for (let i = 0; i < 9; i += 1) {
         for (let j = 0; j < 9; j += 1) {
-          copy[i][j].isInError = false;
+          copy[i][j].cellState = CellState.CORRECT;
         }
       }
     }
 
     each(indexesOfCellsInError, (i) => {
       const index: number[] = convert1DIndexTo2DIndex(parseInt(i, 10));
-      copy[index[0]][index[1]].isInError = true;
+      copy[index[0]][index[1]].cellState = CellState.ERROR;
     });
 
     setTableData(copy);
@@ -54,10 +55,8 @@ function ClearTableButton({ getTableData, setTableData, classString }: ISudokuTa
 
     for (let i = 0; i < 9; i += 1) {
       for (let j = 0; j < 9; j += 1) {
-        if (!copy[i][j].prefilled) {
-          copy[i][j].value = 0;
-          copy[i][j].isInError = false;
-        }
+        copy[i][j].cellState = CellState.UNKNOWN;
+        if (!copy[i][j].prefilled) copy[i][j].value = 0;
       }
     }
 
@@ -113,12 +112,30 @@ function LoadTableButton({
   );
 }
 
-function SolveTableButton({ getTableData, setTableData, classString }: ISudokuTableButton) {
-  const sudokuTable = getTableData();
+function SolveTableButton({
+  getTableData, setTableData, classString,
+}: ISudokuTableButton) {
+  const sudokuTable = cloneDeep(getTableData());
 
   const solveTable = () => {
-    const solvedTable = AISolver(sudokuTable);
-    setTableData(solvedTable);
+    const solvingProcess = AISolver(sudokuTable);
+
+    const showProcessInterval = setInterval(() => {
+      const processTable = cloneDeep(sudokuTable);
+      const cell = pullAt(solvingProcess, 0)[0];
+      if (cell) {
+        const [i, j] = convert1DIndexTo2DIndex(cell.index);
+        processTable[i][j].value = cell.value;
+        processTable[i][j].cellState = cell.cellState;
+        setTableData(processTable);
+
+        // Table to keep track of changes;
+        sudokuTable[i][j].value = cell.value;
+        sudokuTable[i][j].cellState = cell.cellState;
+      } else {
+        clearInterval(showProcessInterval);
+      }
+    }, 10);
   };
 
   return (

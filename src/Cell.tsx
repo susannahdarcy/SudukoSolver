@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { concat, includes, range } from 'lodash-es';
-import { ICellComponent } from './types/ICell';
+import { CellState, ICellComponent } from './types/ICell';
 
 function Cell({
-  value, index, prefilled, handleSetTable, isInError,
+  value, index, prefilled, handleSetTable, cellState,
 }: ICellComponent) {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.currentTarget.value;
@@ -41,7 +41,9 @@ function Cell({
     'text-2xl',
     'text-center',
     prefilled && ['font-bold', 'flex', 'justify-center', 'items-center'],
-    isInError && 'bg-red-600/50',
+    cellState === CellState.ERROR && 'bg-red-600/50',
+    cellState === CellState.PROCESSING && 'bg-orange-300/50',
+    cellState === CellState.CORRECT && 'bg-lime-500/50',
     isTopBorder && 'border-t-3',
     isBottomBorder && 'border-b-3',
     isLeftBorder && 'border-l-3',
