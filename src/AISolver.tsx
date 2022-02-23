@@ -1,7 +1,8 @@
 import {
+  clone,
   cloneDeep, difference, each, floor, map, range,
 } from 'lodash-es';
-import { ICell } from './types/ICell';
+import { CellState, ICell } from './types/ICell';
 import { getValuesFromCellArray } from './SudokuValidater';
 
 const getGroup = (table: ICell[][], cellIndex: number[]) => {
@@ -82,35 +83,47 @@ const isValid = (table: ICell[][], cellIndexes: number[], value: number) => {
   return true;
 };
 
-const backtrackingSearch = (table: ICell[][]) => {
+const backtrackingSearch = (table: ICell[][], solvingProcess: ICell[]) => {
   const emptyCell = getUnassignedCell(table);
 
   if (emptyCell === -1) return true;
 
   const [i, j] = emptyCell;
+  const cellProcess = clone(table[i][j]);
 
   // Get possible values for cell. fetching per loop allows for forward checking.
   const domain = getPossibleValuesForCell(table, emptyCell);
 
   for (let index = 0; index < domain.length; index += 1) {
     const value = domain[index];
+
+    cellProcess.value = value;
+    cellProcess.cellState = CellState.PROCESSING;
+    solvingProcess.push(cellProcess);
+
     if (isValid(table, emptyCell, value)) {
       table[i][j].value = value;
-      // TODO Track value and index for visuals of solving.
-      if (backtrackingSearch(table)) {
-        table[i][j].isInError = false;
+      if (backtrackingSearch(table, solvingProcess)) {
+        cellProcess.value = value;
+        cellProcess.cellState = CellState.CORRECT;
+        solvingProcess.push(cellProcess);
         return true;
       }
       table[i][j].value = 0;
+
+      cellProcess.value = value;
+      cellProcess.cellState = CellState.PROCESSING;
+      solvingProcess.push(cellProcess);
     }
   }
   return false;
 };
 
-function AISolver(table: ICell[][]) {
+function AISolver(table: ICell[][]): ICell[] {
   const solvedTable = cloneDeep(table);
-  backtrackingSearch(solvedTable);
-  return solvedTable;
+  const solvingProcess: ICell[] = [];
+  backtrackingSearch(solvedTable, solvingProcess);
+  return solvingProcess;
 }
 
 export default AISolver;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   range, map, each, split, toNumber, cloneDeep,
 } from 'lodash-es';
-import { ICell } from './types/ICell';
+import { CellState, ICell } from './types/ICell';
 import loadExamples from './LoadExamples';
 import {
   CheckTableButton,
@@ -19,7 +19,7 @@ const basetable = map(range(9), () => {
       value: 0,
       prefilled: false,
       index: 0,
-      isInError: false,
+      cellState: CellState.UNKNOWN,
     };
 
     row.push(cell);
@@ -40,7 +40,7 @@ function inputSudoku(sudokuString: string) {
       value,
       prefilled: value !== 0,
       index: i,
-      isInError: false,
+      cellState: CellState.UNKNOWN,
     };
   });
 
@@ -63,7 +63,7 @@ function Sudoku() {
 
   const getCurrentQuiz = () => currentQuizNumber;
 
-  const setCurrentQuiz = (quizNumber:number) => {
+  const setCurrentQuiz = (quizNumber: number) => {
     setCurrentQuizNumber(quizNumber);
   };
 
