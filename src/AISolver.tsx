@@ -103,10 +103,7 @@ const backtrackingSearch = (table: ICell[][], solvingProcess: ICell[]) => {
 
     if (isValid(table, emptyCell, value)) {
       table[i][j].value = value;
-      // TODO Track value and index for visuals of solving.
       if (backtrackingSearch(table, solvingProcess)) {
-        // table[i][j].cellState = CellState.CORRECT;
-
         cellProcess.value = value;
         cellProcess.cellState = CellState.CORRECT;
         solvingProcess.push(cellProcess);
