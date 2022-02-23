@@ -4,11 +4,21 @@ import {
 import React from 'react';
 import { convert1DIndexTo2DIndex } from './SudokuTable';
 import { vaildateSudoku } from './SudokuValidater';
-import { ISudokuTableAndQuizButton, ISudokuTableButton } from './types/ISudoku';
+import {
+  ISudokuTableAndQuizButton,
+  ISudokuTableAndSuccessModelButton,
+  ISudokuTableButton,
+} from './types/ISudoku';
 import AISolver from './AISolver';
 import loadExamples from './LoadExamples';
 
-function CheckTableButton({ getTableData, setTableData, classString }: ISudokuTableButton) {
+function CheckTableButton(
+  {
+    getTableData, setTableData,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setShowSuccessModal, classString,
+  }: ISudokuTableAndSuccessModelButton,
+) {
   const sudokuTable = getTableData();
 
   const setErrorsInTable = (indexesOfCellsInError: string[]) => {
@@ -20,6 +30,8 @@ function CheckTableButton({ getTableData, setTableData, classString }: ISudokuTa
           copy[i][j].isInError = false;
         }
       }
+
+      // setShowSuccessModal(true);
     }
 
     each(indexesOfCellsInError, (i) => {

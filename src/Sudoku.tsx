@@ -11,6 +11,7 @@ import {
   SolveTableButton,
 } from './SudokuButtons';
 import { SudokuTable } from './SudokuTable';
+import { SuccessModal } from './SuccessModal';
 
 const basetable = map(range(9), () => {
   const row: ICell[] = [];
@@ -67,6 +68,14 @@ function Sudoku() {
     setCurrentQuizNumber(quizNumber);
   };
 
+  const [showSuccessModal, setSuccessModal] = useState(false);
+
+  const getShowSuccessModal = () => showSuccessModal;
+
+  const setShowSuccessModal = (showModal:boolean) => {
+    setSuccessModal(showModal);
+  };
+
   return (
     <div className="container w-168 mx-auto py-10">
       <div className="py-2 grid grid-cols-3">
@@ -83,6 +92,8 @@ function Sudoku() {
         />
       </div>
 
+      <SuccessModal {... { getShowSuccessModal, setShowSuccessModal }} />
+
       <SudokuTable
         {... { getTableData, setTableData }}
       />
@@ -94,7 +105,9 @@ function Sudoku() {
         />
 
         <CheckTableButton
-          {... { getTableData, setTableData }}
+          {... {
+            getTableData, setTableData, getShowSuccessModal, setShowSuccessModal,
+          }}
           classString="col-start-3 place-self-end font-mono"
         />
       </div>
